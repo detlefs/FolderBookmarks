@@ -10,6 +10,7 @@
 
 	Version history
 	---------------
+	v1.0.2	- Details for publishing
 	v1.0.1	- Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
 	v1.0.0	- Initial version
 
