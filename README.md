@@ -19,11 +19,11 @@ Retrieves the folder from a named bookmark and sets current location to the fold
 
 Alias(es): `goto`, `getbm`
 
-#### `Remove-FolderBookmark -Name [name]`
-Removes the bookmark with specified name from the bookmark-list.
+#### `Remove-FolderBookmark -Name [[]name]`
+Removes the bookmark with specified name(s) from the bookmark-list.
 The list of bookmarks is exported to the user profile using `Export-FolderBookmark`.
 
-Alias(es): `rmbm`, `unbookmark`
+Alias(es): `rembm`, `unbookmark`
 
 #### `Get-FolderBookmark`
 Lists the folder bookmarks
@@ -48,3 +48,10 @@ Alias(es): `impbm`
 The bookmarks are stored to the user's profile path into a file with name `.folderBM.clixml`.
 To load the bookmarks automatically on dtsrtup of a new session, I suggest to add the `Import-FolderBookmark`
 call in your `$profile` (normally `C:\Users\detlefs\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`).
+
+#### To delete all bookmarks
+If you need to empty the list of bookmarks completely, you can easily do this by piping the
+list of bookmarks to the `REmove-FolderBookmark` function.
+
+**Example:** `Get-FolderBookmark | Remove-FolderBookmark -WhatIf`
+(**or:** `listbm | rembm`)
