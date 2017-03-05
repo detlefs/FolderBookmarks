@@ -9,6 +9,22 @@
     <AssemblyName>MyApplication</AssemblyName>
     <Name>FolderBookmarks</Name>
     <ProjectHome>.</ProjectHome>
+    <Author>Detlef Schneider</Author>
+    <CompanyName>Schneide-r.de</CompanyName>
+    <Copyright>(c) 2017 by Detlef Schneider.</Copyright>
+    <Description>The module provides functions to manage and use bookmarks that point to folders.</Description>
+    <Guid>bd98b402-156f-40a2-8d50-892f65d96dd2</Guid>
+    <ClrVersion />
+    <PowerShellHostVersion />
+    <PowerShellVersion />
+    <ProcessorArchitecture />
+    <RequiredModules />
+    <Version>1.0.1</Version>
+    <VariablesToExport />
+    <CmdletsToExport>
+    </CmdletsToExport>
+    <AliasesToExport>
+    </AliasesToExport>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -27,11 +43,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="README.md" />
+  </ItemGroup>
   <ItemGroup>
     <Compile Include="FolderBookmarks.psd1" />
     <Compile Include="FolderBookmarks.psm1" />
-    <Compile Include="FolderBookmarks.tests.ps1" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
