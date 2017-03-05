@@ -1,5 +1,9 @@
 # FolderBookmarks
-Module provides functions to manage and use folder bookmarks in PowerShell
+Module provides functions to manage and use folder bookmarks in PowerShell.
+
+The set bookmarks are automatically stored in a file `.folderBM.clixml` in the user's profile path (normally `C:\Users\<username>\Documents\WindowsPowerShell`).
+
+The module is provided under the Apache License Version 2.0. See http://www.apache.org/licenses/ for more details.
 
 **Latest version: 1.0.1**
 
@@ -42,3 +46,5 @@ Alias(es): `impbm`
 
 ## Knowledge
 The bookmarks are stored to the user's profile path into a file with name `.folderBM.clixml`.
+To load the bookmarks automatically on dtsrtup of a new session, I suggest to add the `Import-FolderBookmark`
+call in your `$profile` (normally `C:\Users\detlefs\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`).
