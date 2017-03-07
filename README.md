@@ -5,7 +5,11 @@ The set bookmarks are automatically stored in a file `.folderBM.clixml` in the u
 
 The module is provided under the Apache License Version 2.0. See http://www.apache.org/licenses/ for more details.
 
-**Latest version: 1.0.1**
+### Version history
+    v1.0.3  - Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility
+    v1.0.2  - Details for publishing
+    v1.0.1  - Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
+    v1.0.0  - Initial version
 
 ## Available functions
 #### `Set-FolderBookmark -Name [name] -Path [C:\path\to\folder\]`
@@ -17,7 +21,7 @@ Alias(es): `setbm`, `bookmark`
 #### `Use-FolderBookmark -Name [name]`
 Retrieves the folder from a named bookmark and sets current location to the folder.
 
-Alias(es): `goto`, `getbm`
+Alias(es): `goto`, `gobm`, `go`
 
 #### `Remove-FolderBookmark -Name [[]name]`
 Removes the bookmark with specified name(s) from the bookmark-list.
@@ -28,7 +32,7 @@ Alias(es): `rembm`, `unbookmark`
 #### `Get-FolderBookmark`
 Lists the folder bookmarks
 
-Alias(es): `listbm`
+Alias(es): `getbm`, `listbm`
 
 #### `Export-FolderBookmark`
 Exports the folder bookmarks to the user's profile folder with the name .folderBM.clixml

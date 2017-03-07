@@ -11,7 +11,7 @@
 RootModule = 'FolderBookmarks.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '1.0.2'
+ModuleVersion = '1.0.3'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
@@ -79,8 +79,8 @@ CmdletsToExport = @()
 # VariablesToExport = @()
 
 # Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
-AliasesToExport = 'setbm', 'bookmark', 'goto', 'getbm', 'rembm', 'unbookmark', 'listbm', 'expbm',
-               'impbm'
+AliasesToExport = 'setbm', 'bookmark', 'goto', 'gobm', 'go', 'rembm', 'unbookmark', 'getbm',
+				'listbm', 'expbm', 'impbm'
 
 # Aus diesem Modul zu exportierende DSC-Ressourcen
 # DscResourcesToExport = @()
@@ -107,7 +107,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Added URL to project site (GitHub)'
+        ReleaseNotes = 'Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility'
 
         # External dependent modules of this module
         # ExternalModuleDependencies = ''

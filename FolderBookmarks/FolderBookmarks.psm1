@@ -10,6 +10,7 @@
 
 	Version history
 	---------------
+	v1.0.3	- Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility
 	v1.0.2	- Details for publishing
 	v1.0.1	- Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
 	v1.0.0	- Initial version
@@ -104,7 +105,8 @@ function Use-FolderBookmark {
 	Set-Location $Script:folderBMs.Get_Item($Name)
 }
 New-Alias -Name goto -Value Use-FolderBookmark
-New-Alias -Name getbm -Value Use-FolderBookmark
+New-Alias -Name gobm -Value Use-FolderBookmark
+New-Alias -Name go -Value Use-FolderBookmark
 
 function Remove-FolderBookmark {
 	<#
@@ -172,6 +174,7 @@ function Get-FolderBookmark {
 
 	$Script:folderBMs.GetEnumerator() | Sort-Object Name
 }
+New-Alias -Name getbm -Value Get-FolderBookmark
 New-Alias -Name listbm -Value Get-FolderBookmark
 
 function Export-FolderBookmark {
@@ -218,3 +221,5 @@ function Import-FolderBookmark {
 	}
 }
 New-Alias -Name impbm -Value Import-FolderBookmark
+
+Export-ModuleMember -Function * -Alias *
