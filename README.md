@@ -23,7 +23,7 @@ Retrieves the folder from a named bookmark and sets current location to the fold
 
 Alias(es): `goto`, `gobm`, `go`
 
-#### `Remove-FolderBookmark -Name [[]name]`
+#### `Remove-FolderBookmark -Name [name[]]`
 Removes the bookmark with specified name(s) from the bookmark-list.
 The list of bookmarks is exported to the user profile using `Export-FolderBookmark`.
 
@@ -55,7 +55,7 @@ call in your `$profile` (normally `C:\Users\detlefs\Documents\WindowsPowerShell\
 
 #### To delete all bookmarks
 If you need to empty the list of bookmarks completely, you can easily do this by piping the
-list of bookmarks to the `REmove-FolderBookmark` function.
+list of bookmarks to the `Remove-FolderBookmark` function.
 
 **Example:** `Get-FolderBookmark | Remove-FolderBookmark -WhatIf`
-(**or:** `listbm | rembm`)
+(**or:** `getbm | rembm`)

@@ -1,9 +1,9 @@
 #
-# Modulmanifest für das Modul "PSGet_FolderBookmarks"
+# Modulmanifest für das Modul "FolderBookmarks"
 #
 # Generiert von: Detlef Schneider
 #
-# Generiert am: 05.03.2017
+# Generiert am: 07.03.2017
 #
 
 @{
