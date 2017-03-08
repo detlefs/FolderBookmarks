@@ -11,6 +11,9 @@ The module is provided under the Apache License Version 2.0. See http://www.apac
     v1.0.1  - Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
     v1.0.0  - Initial version
 
+## Installation
+Please simply execute `Install-Module -Name FolderBookmarks` in an elevated PowerShell session to install the most current version directly from powershellgallery.com.
+
 ## Available functions
 #### `Set-FolderBookmark -Name [name] -Path [C:\path\to\folder\]`
 The specified path is stored to a bookmark that can be used with `Get-FolderBookmark`.
