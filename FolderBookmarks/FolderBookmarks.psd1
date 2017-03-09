@@ -11,7 +11,7 @@
 RootModule = 'FolderBookmarks.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '1.0.3'
+ModuleVersion = '1.0.4'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
@@ -107,7 +107,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility'
+        ReleaseNotes = 'Implemented dynamic parameter validation for Use-FolderBookmark'
 
         # External dependent modules of this module
         # ExternalModuleDependencies = ''

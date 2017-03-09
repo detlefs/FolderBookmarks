@@ -45,8 +45,17 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Debug-FolderBookmarks.ps1" />
     <Compile Include="FolderBookmarks.psd1" />
     <Compile Include="FolderBookmarks.psm1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Management, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Name>System.Management</Name>
+      <AssemblyName>System.Management.dll</AssemblyName>
+      <HintPath>\Program Files\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\System.Management.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />
