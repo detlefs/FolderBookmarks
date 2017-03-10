@@ -10,7 +10,8 @@
 
 	Version history
 	---------------
-	v1.0.3	- Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility
+	v1.0.4	- Implemented dynamic parameter validation for Use-FolderBookmark
+	v1.0.3	- Changed/Added some aliases, added Export-ModuleMember for Posh4 compatibility
 	v1.0.2	- Details for publishing
 	v1.0.1	- Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
 	v1.0.0	- Initial version
@@ -115,7 +116,6 @@ function Use-FolderBookmark {
 		Set-Location $Script:folderBMs.Get_Item($Name)
 	}
 }
-
 New-Alias -Name goto -Value Use-FolderBookmark
 New-Alias -Name gobm -Value Use-FolderBookmark
 New-Alias -Name go -Value Use-FolderBookmark
@@ -284,6 +284,12 @@ Function New-DynamicParam {
     .PARAMETER ValueFromPipelineByPropertyName
         If specified, set the ValueFromPipelineByPropertyName attribute for this dynamic parameter
 
+	.PARAMETER ValueFromPipeline
+        If specified, set the ValueFromPipeline attribute for this dynamic parameter
+
+	.PARAMETER ValueFromRemainingArguments
+        If specified, set the ValueFromRemainingArguments attribute for this dynamic parameter
+
     .PARAMETER HelpMessage
         If specified, set the HelpMessage for this dynamic parameter
 
@@ -385,43 +391,24 @@ Function New-DynamicParam {
 
 #>
 param(
-
-    [string]
-    $Name,
-
-    [System.Type]
-    $Type = [string],
-
-    [string[]]
-    $Alias = @(),
-
-    [string[]]
-    $ValidateSet,
-
-    [switch]
-    $Mandatory,
-
-    [string]
-    $ParameterSetName="__AllParameterSets",
-
-    [int]
-    $Position,
-
-    [switch]
-    $ValueFromPipelineByPropertyName,
-
-    [string]
-    $HelpMessage,
-
+    [string]$Name,
+    [System.Type]$Type = [string],
+    [string[]]$Alias = @(),
+	[string[]]$ValidateSet,
+    [switch]$Mandatory,
+    [string]$ParameterSetName="__AllParameterSets",
+    [int]$Position,
+    [switch]$ValueFromPipelineByPropertyName,
+	[switch]$ValueFromPipeline,
+	[switch]$ValueFromRemainingArguments,
+    [string]$HelpMessage,
     [validatescript({
         if(-not ( $_ -is [System.Management.Automation.RuntimeDefinedParameterDictionary] -or -not $_) )
         {
             Throw "DPDictionary must be a System.Management.Automation.RuntimeDefinedParameterDictionary object, or not exist"
         }
         $True
-    })]
-    $DPDictionary = $false
-
+    })]$DPDictionary = $false
 )
     #Create attribute object, add attributes, add to collection
         $ParamAttr = New-Object System.Management.Automation.ParameterAttribute
@@ -438,6 +425,14 @@ param(
         {
             $ParamAttr.ValueFromPipelineByPropertyName = $True
         }
+		if($ValueFromPipeline)
+		{
+			$ParamAttr.ValueFromPipeline = $True
+		}
+		if($ValueFromRemainingArguments)
+		{
+			$ParamAttr.ValueFromRemainingArguments = $True
+		}
         if($HelpMessage)
         {
             $ParamAttr.HelpMessage = $HelpMessage
