@@ -107,7 +107,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Implemented dynamic parameter validation for Use-FolderBookmark'
+        ReleaseNotes = 'Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark'
 
         # External dependent modules of this module
         # ExternalModuleDependencies = ''

@@ -10,7 +10,7 @@
 
 	Version history
 	---------------
-	v1.0.4	- Implemented dynamic parameter validation for Use-FolderBookmark
+	v1.0.4	- Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark
 	v1.0.3	- Changed/Added some aliases, added Export-ModuleMember for Posh4 compatibility
 	v1.0.2	- Details for publishing
 	v1.0.1	- Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
@@ -54,8 +54,8 @@ function Set-FolderBookmark {
 
 	[CmdletBinding(SupportsShouldProcess=$true)]
 	param (
-		[Parameter(Position=0, Mandatory=$true)][Alias("n")][string]$Name,
-		[Parameter(Position=1)][Alias("p")][string]$Path = $(Get-Location).Path
+		[Parameter(Position=0, Mandatory=$true, HelpMessage="Enter the name of a bookmark")][Alias("n")][string]$Name,
+		[Parameter(Position=1, HelpMessage="Enter the folder path, the bookmark will point to")][Alias("p")][string]$Path = $(Get-Location).Path
 	)
 
 	if (!(Get-Item $Path).PSIsContainer) {
@@ -84,6 +84,7 @@ function Use-FolderBookmark {
 		Retrieves the folder from a named bookmark and sets current location to the folder
 	.PARAMETER Name
 		Mandatory: yes, Alias(es): n
+		Name of the bookmark to use
 	.EXAMPLE
 		Use-FolderBookmark -Name Sys32
 
@@ -105,7 +106,7 @@ function Use-FolderBookmark {
 	)
 	DynamicParam {
 		$values = (Get-FolderBookmark).Name
-		New-DynamicParam -Name Name -ValidateSet $values -Position 0 -Mandatory -Alias n
+		New-DynamicParam -Name Name -ValidateSet $values -Position 0 -Mandatory -HelpMessage "Enter the name of a bookmark" -Alias n
 	}
 
 	begin {
@@ -147,10 +148,16 @@ function Remove-FolderBookmark {
 
 	[CmdletBinding(SupportsShouldProcess=$true)]
 	param (
-		[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)][Alias("n")][string[]]$Name
+		#[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)][Alias("n")][string[]]$Name
 	)
+	DynamicParam {
+		$values = (Get-FolderBookmark).Name
+		New-DynamicParam -Name Name -ValidateSet $values -Position 0 -Mandatory -ValueFromPipeline -ValueFromPipelineByPropertyName -Type array -HelpMessage "Enter the name of a bookmark" -Alias n
+	}
 
-	Begin { }
+	Begin {
+		$Name = $PSBoundParameters.Name
+	}
 
 	Process {
 		foreach ($n in $Name) {
@@ -177,7 +184,7 @@ function Get-FolderBookmark {
 	.EXAMPLE
 		Get-FolderBookmark
 
-		Lists all bookmark
+		Lists all bookmarks
 	.NOTES
 		Version history
 		---------------
@@ -235,6 +242,8 @@ function Import-FolderBookmark {
 New-Alias -Name impbm -Value Import-FolderBookmark
 
 #region Helper functions
+# New-DynamicParam is downloaded from https://github.com/RamblingCookieMonster/PowerShell/blob/master/New-DynamicParam.ps1
+# Two additional parameters added: ValueFromPipeline, ValueFromRemainingArguments
 Function New-DynamicParam {
 <#
     .SYNOPSIS
