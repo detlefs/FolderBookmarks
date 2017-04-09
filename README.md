@@ -54,7 +54,7 @@ Alias(es): `impbm`
 
 ## Knowledge
 The bookmarks are stored to the user's profile path into a file with name `.folderBM.clixml`.
-To load the bookmarks automatically on dtsrtup of a new session, I suggest to add the `Import-FolderBookmark`
+To load the bookmarks automatically on startup of a new session, I suggest to add the `Import-FolderBookmark`
 call in your `$profile` (normally `C:\Users\detlefs\Documents\WindowsPowerShell\Microsoft.PowerShell_profile.ps1`).
 
 #### To delete all bookmarks
