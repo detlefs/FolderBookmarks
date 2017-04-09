@@ -11,7 +11,7 @@
 RootModule = 'FolderBookmarks.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '1.0.4'
+ModuleVersion = '1.0.5'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
@@ -70,7 +70,7 @@ CLRVersion = '4.0'
 # Aus diesem Modul zu exportierende Funktionen. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Funktionen vorhanden sind.
 FunctionsToExport = 'Set-FolderBookmark', 'Use-FolderBookmark', 'Remove-FolderBookmark',
                'Get-FolderBookmark', 'Export-FolderBookmark',
-               'Import-FolderBookmark'
+               'Import-FolderBookmark', 'Test-FolderBookmark'
 
 # Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
 CmdletsToExport = @()
@@ -80,7 +80,7 @@ CmdletsToExport = @()
 
 # Aus diesem Modul zu exportierende Aliase. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Aliase vorhanden sind.
 AliasesToExport = 'setbm', 'bookmark', 'goto', 'gobm', 'go', 'rembm', 'unbookmark', 'getbm',
-				'listbm', 'expbm', 'impbm'
+				'listbm', 'expbm', 'impbm', 'testbm'
 
 # Aus diesem Modul zu exportierende DSC-Ressourcen
 # DscResourcesToExport = @()
@@ -107,7 +107,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark'
+        ReleaseNotes = 'Implemented Test-FolderBookmark function'
 
         # External dependent modules of this module
         # ExternalModuleDependencies = ''

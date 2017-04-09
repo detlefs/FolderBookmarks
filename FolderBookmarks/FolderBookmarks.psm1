@@ -10,6 +10,7 @@
 
 	Version history
 	---------------
+	v1.0.5	- Implemented Test-FolderBookmark function
 	v1.0.4	- Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark
 	v1.0.3	- Changed/Added some aliases, added Export-ModuleMember for Posh4 compatibility
 	v1.0.2	- Details for publishing
@@ -55,13 +56,17 @@ function Set-FolderBookmark {
 	[CmdletBinding(SupportsShouldProcess=$true)]
 	param (
 		[Parameter(Position=0, Mandatory=$true, HelpMessage="Enter the name of a bookmark")][Alias("n")][string]$Name,
-		[Parameter(Position=1, HelpMessage="Enter the folder path, the bookmark will point to")][Alias("p")][string]$Path = $(Get-Location).Path
+		[Parameter(Position=1, HelpMessage="Enter the folder path, the bookmark will point to")][Alias("p")]
+		[ValidateScript({
+			if ((Get-Item $_).PSIsContainer) {
+				$true
+			}
+			else {
+				throw "$_ is not a folder."
+			}
+		})]
+		[string]$Path = $(Get-Location).Path
 	)
-
-	if (!(Get-Item $Path).PSIsContainer) {
-		Write-Error "$Path is not a folder." -Category InvalidData -RecommendedAction "Please provide a folder path."
-		return
-	}
 
 	if ($PSCmdlet.ShouldProcess($Name, "Set FolderBookmark")) {
 		if ($Script:folderBMs.ContainsKey($Name)) {
@@ -240,6 +245,40 @@ function Import-FolderBookmark {
 	}
 }
 New-Alias -Name impbm -Value Import-FolderBookmark
+
+function Test-FolderBookmark {
+	<#
+	.SYNOPSIS
+		Tests if a specified path is stored in the bookmark list
+	.DESCRIPTION
+		The function tests, if the specified path is stored in the bookmark list. If the path is found in the list, the function returns $true. Otherwise $false is returned
+	.EXAMPLE
+		Test-FolderBookmark -Path C:\Windows\System32
+
+		Returns $true or $false
+	.NOTES
+		Version history
+		---------------
+		v1.0.0	- Initial version
+	#>
+
+	[CmdletBinding()]
+	param (
+		[Parameter(Position=0, HelpMessage="Specify a folder path to test")][Alias("p")]
+		[ValidateScript({
+			if ((Get-Item $_).PSIsContainer) {
+				$true
+			}
+			else {
+				throw "$_ is not a folder."
+			}
+		})]
+		[string]$Path = $(Get-Location).Path
+	)
+
+	$Script:folderBMs.ContainsValue($Path)
+}
+New-Alias -Name testbm -Value Test-FolderBookmark
 
 #region Helper functions
 # New-DynamicParam is downloaded from https://github.com/RamblingCookieMonster/PowerShell/blob/master/New-DynamicParam.ps1
