@@ -22,6 +22,7 @@
 	http://www.apache.org/licenses/
 #>
 
+# Global script variables
 $Script:folderBMs = @{}
 $Script:folderBMPath = Join-Path (Split-Path -Parent $profile) .folderBM.clixml
 

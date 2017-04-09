@@ -6,7 +6,8 @@ The set bookmarks are automatically stored in a file `.folderBM.clixml` in the u
 The module is provided under the Apache License Version 2.0. See http://www.apache.org/licenses/ for more details.
 
 ### Version history
-    v1.0.4	- Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark
+    v1.0.5  - Implemented Test-FolderBookmark function
+    v1.0.4  - Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark
     v1.0.3  - Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility
     v1.0.2  - Details for publishing
     v1.0.1  - Implemented support for -WhatIf and -Confirm in Set-FolderBookmark and Remove-FolderBookmark
@@ -51,6 +52,13 @@ To automatically import the bookmarks into each user session, it's advised to ad
 the users profile script.
 
 Alias(es): `impbm`
+
+#### `Test-FolderBookmark`
+The function tests, if the specified path is stored in the bookmark list. If the path is found in the list, the function returns $true. Otherwise $false is returned
+
+This function can be helpful to implement a custom formatting in a customized prompt script.
+
+Alias(es): `testbm`
 
 ## Knowledge
 The bookmarks are stored to the user's profile path into a file with name `.folderBM.clixml`.
