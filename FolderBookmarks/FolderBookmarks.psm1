@@ -10,6 +10,7 @@
 
 	Version history
 	---------------
+	v1.0.6	- Implemented parameters for Get-FolderBookmark
 	v1.0.5	- Implemented Test-FolderBookmark function
 	v1.0.4	- Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark
 	v1.0.3	- Changed/Added some aliases, added Export-ModuleMember for Posh4 compatibility
@@ -186,18 +187,54 @@ New-Alias -Name unbookmark -Value Remove-FolderBookmark
 function Get-FolderBookmark {
 	<#
 	.SYNOPSIS
-		Lists the folder bookmarks
+		Lists the folder bookmarks or returns the bookmark
 	.EXAMPLE
 		Get-FolderBookmark
 
 		Lists all bookmarks
+	.EXAMPLE
+		Get-FolderBookmark -Name Win
+
+		Returns the bookmark object with the name Win
+	.EXAMPLE
+		Get-FolderBookmark -Path C:\Windows
+
+		´Returns the bookmark object with the path C:\Windows, or $null, if no bookmark with this path exists
 	.NOTES
 		Version history
 		---------------
+		v1.0.1	- Implemented parameters
 		v1.0.0	- Initial version
 	#>
 
-	$Script:folderBMs.GetEnumerator() | Sort-Object Name
+	[CmdletBinding(DefaultParameterSetName="Name")]
+	param (
+		[Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true, ParameterSetName="Name")][string]$Name,
+		[Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true, ParameterSetName="Path")]
+		[ValidateScript({
+			if ((Get-Item $_).PSIsContainer) {
+				$true
+			}
+			else {
+				throw "$_ is not a folder."
+			}
+		})]
+		[string]$Path = $(Get-Location).Path
+	)
+
+	if (($PSCmdlet.ParameterSetName -eq "Name") -and ($Name)) {
+		if ($Script:folderBMs.ContainsKey($Name)) {
+			$Script:folderBMs.GetEnumerator() | Where-Object { $_.Key -ilike $Name}
+		}
+	}
+	elseif (($PSCmdlet.ParameterSetName -eq "Path") -and ($Path)) {
+		if ($Script:folderBMs.ContainsValue($Path)) {
+			$Script:folderBMs.GetEnumerator() | Where-Object { $_.Value -ilike $Path}
+		}
+	}
+	else {
+		$Script:folderBMs.GetEnumerator() | Sort-Object Name
+	}
 }
 New-Alias -Name getbm -Value Get-FolderBookmark
 New-Alias -Name listbm -Value Get-FolderBookmark
@@ -252,7 +289,16 @@ function Test-FolderBookmark {
 	.SYNOPSIS
 		Tests if a specified path is stored in the bookmark list
 	.DESCRIPTION
-		The function tests, if the specified path is stored in the bookmark list. If the path is found in the list, the function returns $true. Otherwise $false is returned
+		The function tests, if the specified path is stored in the bookmark list. If the path is found in the list, the function returns $true. Otherwise $false is returned.
+
+		For example, the following code snipped put into a custom 'prompt' function, will add a dark cyan '[go]' to the prompt:
+
+			...
+			if (Test-FolderBookmark -Path (Get-Location).Path)
+			{
+				Write-Host ' [go] ' -ForegroundColor DarkCyan -NoNewline
+			}
+			...
 	.EXAMPLE
 		Test-FolderBookmark -Path C:\Windows\System32
 
@@ -286,194 +332,194 @@ New-Alias -Name testbm -Value Test-FolderBookmark
 # Two additional parameters added: ValueFromPipeline, ValueFromRemainingArguments
 Function New-DynamicParam {
 <#
-    .SYNOPSIS
-        Helper function to simplify creating dynamic parameters
+	.SYNOPSIS
+		Helper function to simplify creating dynamic parameters
 
-    .DESCRIPTION
-        Helper function to simplify creating dynamic parameters
+	.DESCRIPTION
+		Helper function to simplify creating dynamic parameters
 
-        Example use cases:
-            Include parameters only if your environment dictates it
-            Include parameters depending on the value of a user-specified parameter
-            Provide tab completion and intellisense for parameters, depending on the environment
+		Example use cases:
+			Include parameters only if your environment dictates it
+			Include parameters depending on the value of a user-specified parameter
+			Provide tab completion and intellisense for parameters, depending on the environment
 
-        Please keep in mind that all dynamic parameters you create will not have corresponding variables created.
-           One of the examples illustrates a generic method for populating appropriate variables from dynamic parameters
-           Alternatively, manually reference $PSBoundParameters for the dynamic parameter value
+		Please keep in mind that all dynamic parameters you create will not have corresponding variables created.
+		   One of the examples illustrates a generic method for populating appropriate variables from dynamic parameters
+		   Alternatively, manually reference $PSBoundParameters for the dynamic parameter value
 
-    .NOTES
-        Credit to http://jrich523.wordpress.com/2013/05/30/powershell-simple-way-to-add-dynamic-parameters-to-advanced-function/
-            Added logic to make option set optional
-            Added logic to add RuntimeDefinedParameter to existing DPDictionary
-            Added a little comment based help
+	.NOTES
+		Credit to http://jrich523.wordpress.com/2013/05/30/powershell-simple-way-to-add-dynamic-parameters-to-advanced-function/
+			Added logic to make option set optional
+			Added logic to add RuntimeDefinedParameter to existing DPDictionary
+			Added a little comment based help
 
-        Credit to BM for alias and type parameters and their handling
+		Credit to BM for alias and type parameters and their handling
 
-    .PARAMETER Name
-        Name of the dynamic parameter
+	.PARAMETER Name
+		Name of the dynamic parameter
 
-    .PARAMETER Type
-        Type for the dynamic parameter.  Default is string
+	.PARAMETER Type
+		Type for the dynamic parameter.  Default is string
 
-    .PARAMETER Alias
-        If specified, one or more aliases to assign to the dynamic parameter
+	.PARAMETER Alias
+		If specified, one or more aliases to assign to the dynamic parameter
 
-    .PARAMETER ValidateSet
-        If specified, set the ValidateSet attribute of this dynamic parameter
+	.PARAMETER ValidateSet
+		If specified, set the ValidateSet attribute of this dynamic parameter
 
-    .PARAMETER Mandatory
-        If specified, set the Mandatory attribute for this dynamic parameter
+	.PARAMETER Mandatory
+		If specified, set the Mandatory attribute for this dynamic parameter
 
-    .PARAMETER ParameterSetName
-        If specified, set the ParameterSet attribute for this dynamic parameter
+	.PARAMETER ParameterSetName
+		If specified, set the ParameterSet attribute for this dynamic parameter
 
-    .PARAMETER Position
-        If specified, set the Position attribute for this dynamic parameter
+	.PARAMETER Position
+		If specified, set the Position attribute for this dynamic parameter
 
-    .PARAMETER ValueFromPipelineByPropertyName
-        If specified, set the ValueFromPipelineByPropertyName attribute for this dynamic parameter
+	.PARAMETER ValueFromPipelineByPropertyName
+		If specified, set the ValueFromPipelineByPropertyName attribute for this dynamic parameter
 
 	.PARAMETER ValueFromPipeline
-        If specified, set the ValueFromPipeline attribute for this dynamic parameter
+		If specified, set the ValueFromPipeline attribute for this dynamic parameter
 
 	.PARAMETER ValueFromRemainingArguments
-        If specified, set the ValueFromRemainingArguments attribute for this dynamic parameter
+		If specified, set the ValueFromRemainingArguments attribute for this dynamic parameter
 
-    .PARAMETER HelpMessage
-        If specified, set the HelpMessage for this dynamic parameter
+	.PARAMETER HelpMessage
+		If specified, set the HelpMessage for this dynamic parameter
 
-    .PARAMETER DPDictionary
-        If specified, add resulting RuntimeDefinedParameter to an existing RuntimeDefinedParameterDictionary (appropriate for multiple dynamic parameters)
-        If not specified, create and return a RuntimeDefinedParameterDictionary (appropriate for a single dynamic parameter)
+	.PARAMETER DPDictionary
+		If specified, add resulting RuntimeDefinedParameter to an existing RuntimeDefinedParameterDictionary (appropriate for multiple dynamic parameters)
+		If not specified, create and return a RuntimeDefinedParameterDictionary (appropriate for a single dynamic parameter)
 
-        See final example for illustration
+		See final example for illustration
 
-    .EXAMPLE
+	.EXAMPLE
 
-        function Show-Free
-        {
-            [CmdletBinding()]
-            Param()
-            DynamicParam {
-                $options = @( gwmi win32_volume | %{$_.driveletter} | sort )
-                New-DynamicParam -Name Drive -ValidateSet $options -Position 0 -Mandatory
-            }
-            begin{
-                #have to manually populate
-                $drive = $PSBoundParameters.drive
-            }
-            process{
-                $vol = gwmi win32_volume -Filter "driveletter='$drive'"
-                "{0:N2}% free on {1}" -f ($vol.Capacity / $vol.FreeSpace),$drive
-            }
-        } #Show-Free
+		function Show-Free
+		{
+			[CmdletBinding()]
+			Param()
+			DynamicParam {
+				$options = @( gwmi win32_volume | %{$_.driveletter} | sort )
+				New-DynamicParam -Name Drive -ValidateSet $options -Position 0 -Mandatory
+			}
+			begin{
+				#have to manually populate
+				$drive = $PSBoundParameters.drive
+			}
+			process{
+				$vol = gwmi win32_volume -Filter "driveletter='$drive'"
+				"{0:N2}% free on {1}" -f ($vol.Capacity / $vol.FreeSpace),$drive
+			}
+		} #Show-Free
 
-        Show-Free -Drive <tab>
+		Show-Free -Drive <tab>
 
-    # This example illustrates the use of New-DynamicParam to create a single dynamic parameter
-    # The Drive parameter ValidateSet populates with all available volumes on the computer for handy tab completion / intellisense
+	# This example illustrates the use of New-DynamicParam to create a single dynamic parameter
+	# The Drive parameter ValidateSet populates with all available volumes on the computer for handy tab completion / intellisense
 
-    .EXAMPLE
+	.EXAMPLE
 
-    # I found many cases where I needed to add more than one dynamic parameter
-    # The DPDictionary parameter lets you specify an existing dictionary
-    # The block of code in the Begin block loops through bound parameters and defines variables if they don't exist
+	# I found many cases where I needed to add more than one dynamic parameter
+	# The DPDictionary parameter lets you specify an existing dictionary
+	# The block of code in the Begin block loops through bound parameters and defines variables if they don't exist
 
-        Function Test-DynPar{
-            [cmdletbinding()]
-            param(
-                [string[]]$x = $Null
-            )
-            DynamicParam
-            {
-                #Create the RuntimeDefinedParameterDictionary
-                $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+		Function Test-DynPar{
+			[cmdletbinding()]
+			param(
+				[string[]]$x = $Null
+			)
+			DynamicParam
+			{
+				#Create the RuntimeDefinedParameterDictionary
+				$Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-                New-DynamicParam -Name AlwaysParam -ValidateSet @( gwmi win32_volume | %{$_.driveletter} | sort ) -DPDictionary $Dictionary
+				New-DynamicParam -Name AlwaysParam -ValidateSet @( gwmi win32_volume | %{$_.driveletter} | sort ) -DPDictionary $Dictionary
 
-                #Add dynamic parameters to $dictionary
-                if($x -eq 1)
-                {
-                    New-DynamicParam -Name X1Param1 -ValidateSet 1,2 -mandatory -DPDictionary $Dictionary
-                    New-DynamicParam -Name X1Param2 -DPDictionary $Dictionary
-                    New-DynamicParam -Name X3Param3 -DPDictionary $Dictionary -Type DateTime
-                }
-                else
-                {
-                    New-DynamicParam -Name OtherParam1 -Mandatory -DPDictionary $Dictionary
-                    New-DynamicParam -Name OtherParam2 -DPDictionary $Dictionary
-                    New-DynamicParam -Name OtherParam3 -DPDictionary $Dictionary -Type DateTime
-                }
+				#Add dynamic parameters to $dictionary
+				if($x -eq 1)
+				{
+					New-DynamicParam -Name X1Param1 -ValidateSet 1,2 -mandatory -DPDictionary $Dictionary
+					New-DynamicParam -Name X1Param2 -DPDictionary $Dictionary
+					New-DynamicParam -Name X3Param3 -DPDictionary $Dictionary -Type DateTime
+				}
+				else
+				{
+					New-DynamicParam -Name OtherParam1 -Mandatory -DPDictionary $Dictionary
+					New-DynamicParam -Name OtherParam2 -DPDictionary $Dictionary
+					New-DynamicParam -Name OtherParam3 -DPDictionary $Dictionary -Type DateTime
+				}
 
-                #return RuntimeDefinedParameterDictionary
-                $Dictionary
-            }
-            Begin
-            {
-                #This standard block of code loops through bound parameters...
-                #If no corresponding variable exists, one is created
-                    #Get common parameters, pick out bound parameters not in that set
-                    Function _temp { [cmdletbinding()] param() }
-                    $BoundKeys = $PSBoundParameters.keys | Where-Object { (get-command _temp | select -ExpandProperty parameters).Keys -notcontains $_}
-                    foreach($param in $BoundKeys)
-                    {
-                        if (-not ( Get-Variable -name $param -scope 0 -ErrorAction SilentlyContinue ) )
-                        {
-                            New-Variable -Name $Param -Value $PSBoundParameters.$param
-                            Write-Verbose "Adding variable for dynamic parameter '$param' with value '$($PSBoundParameters.$param)'"
-                        }
-                    }
+				#return RuntimeDefinedParameterDictionary
+				$Dictionary
+			}
+			Begin
+			{
+				#This standard block of code loops through bound parameters...
+				#If no corresponding variable exists, one is created
+					#Get common parameters, pick out bound parameters not in that set
+					Function _temp { [cmdletbinding()] param() }
+					$BoundKeys = $PSBoundParameters.keys | Where-Object { (get-command _temp | select -ExpandProperty parameters).Keys -notcontains $_}
+					foreach($param in $BoundKeys)
+					{
+						if (-not ( Get-Variable -name $param -scope 0 -ErrorAction SilentlyContinue ) )
+						{
+							New-Variable -Name $Param -Value $PSBoundParameters.$param
+							Write-Verbose "Adding variable for dynamic parameter '$param' with value '$($PSBoundParameters.$param)'"
+						}
+					}
 
-                #Appropriate variables should now be defined and accessible
-                    Get-Variable -scope 0
-            }
-        }
+				#Appropriate variables should now be defined and accessible
+					Get-Variable -scope 0
+			}
+		}
 
-    # This example illustrates the creation of many dynamic parameters using New-DynamicParam
-        # You must create a RuntimeDefinedParameterDictionary object ($dictionary here)
-        # To each New-DynamicParam call, add the -DPDictionary parameter pointing to this RuntimeDefinedParameterDictionary
-        # At the end of the DynamicParam block, return the RuntimeDefinedParameterDictionary
-        # Initialize all bound parameters using the provided block or similar code
+	# This example illustrates the creation of many dynamic parameters using New-DynamicParam
+		# You must create a RuntimeDefinedParameterDictionary object ($dictionary here)
+		# To each New-DynamicParam call, add the -DPDictionary parameter pointing to this RuntimeDefinedParameterDictionary
+		# At the end of the DynamicParam block, return the RuntimeDefinedParameterDictionary
+		# Initialize all bound parameters using the provided block or similar code
 
-    .FUNCTIONALITY
-        PowerShell Language
+	.FUNCTIONALITY
+		PowerShell Language
 
 #>
 param(
-    [string]$Name,
-    [System.Type]$Type = [string],
-    [string[]]$Alias = @(),
+	[string]$Name,
+	[System.Type]$Type = [string],
+	[string[]]$Alias = @(),
 	[string[]]$ValidateSet,
-    [switch]$Mandatory,
-    [string]$ParameterSetName="__AllParameterSets",
-    [int]$Position,
-    [switch]$ValueFromPipelineByPropertyName,
+	[switch]$Mandatory,
+	[string]$ParameterSetName="__AllParameterSets",
+	[int]$Position,
+	[switch]$ValueFromPipelineByPropertyName,
 	[switch]$ValueFromPipeline,
 	[switch]$ValueFromRemainingArguments,
-    [string]$HelpMessage,
-    [validatescript({
-        if(-not ( $_ -is [System.Management.Automation.RuntimeDefinedParameterDictionary] -or -not $_) )
-        {
-            Throw "DPDictionary must be a System.Management.Automation.RuntimeDefinedParameterDictionary object, or not exist"
-        }
-        $True
-    })]$DPDictionary = $false
+	[string]$HelpMessage,
+	[validatescript({
+		if(-not ( $_ -is [System.Management.Automation.RuntimeDefinedParameterDictionary] -or -not $_) )
+		{
+			Throw "DPDictionary must be a System.Management.Automation.RuntimeDefinedParameterDictionary object, or not exist"
+		}
+		$True
+	})]$DPDictionary = $false
 )
-    #Create attribute object, add attributes, add to collection
-        $ParamAttr = New-Object System.Management.Automation.ParameterAttribute
-        $ParamAttr.ParameterSetName = $ParameterSetName
-        if($mandatory)
-        {
-            $ParamAttr.Mandatory = $True
-        }
-        if($Position -ne $null)
-        {
-            $ParamAttr.Position=$Position
-        }
-        if($ValueFromPipelineByPropertyName)
-        {
-            $ParamAttr.ValueFromPipelineByPropertyName = $True
-        }
+	#Create attribute object, add attributes, add to collection
+		$ParamAttr = New-Object System.Management.Automation.ParameterAttribute
+		$ParamAttr.ParameterSetName = $ParameterSetName
+		if($mandatory)
+		{
+			$ParamAttr.Mandatory = $True
+		}
+		if($Position -ne $null)
+		{
+			$ParamAttr.Position=$Position
+		}
+		if($ValueFromPipelineByPropertyName)
+		{
+			$ParamAttr.ValueFromPipelineByPropertyName = $True
+		}
 		if($ValueFromPipeline)
 		{
 			$ParamAttr.ValueFromPipeline = $True
@@ -482,41 +528,41 @@ param(
 		{
 			$ParamAttr.ValueFromRemainingArguments = $True
 		}
-        if($HelpMessage)
-        {
-            $ParamAttr.HelpMessage = $HelpMessage
-        }
+		if($HelpMessage)
+		{
+			$ParamAttr.HelpMessage = $HelpMessage
+		}
 
-        $AttributeCollection = New-Object 'Collections.ObjectModel.Collection[System.Attribute]'
-        $AttributeCollection.Add($ParamAttr)
+		$AttributeCollection = New-Object 'Collections.ObjectModel.Collection[System.Attribute]'
+		$AttributeCollection.Add($ParamAttr)
 
-    #param validation set if specified
-        if($ValidateSet)
-        {
-            $ParamOptions = New-Object System.Management.Automation.ValidateSetAttribute -ArgumentList $ValidateSet
-            $AttributeCollection.Add($ParamOptions)
-        }
+	#param validation set if specified
+		if($ValidateSet)
+		{
+			$ParamOptions = New-Object System.Management.Automation.ValidateSetAttribute -ArgumentList $ValidateSet
+			$AttributeCollection.Add($ParamOptions)
+		}
 
-    #Aliases if specified
-        if($Alias.count -gt 0) {
-            $ParamAlias = New-Object System.Management.Automation.AliasAttribute -ArgumentList $Alias
-            $AttributeCollection.Add($ParamAlias)
-        }
+	#Aliases if specified
+		if($Alias.count -gt 0) {
+			$ParamAlias = New-Object System.Management.Automation.AliasAttribute -ArgumentList $Alias
+			$AttributeCollection.Add($ParamAlias)
+		}
 
-    #Create the dynamic parameter
-        $Parameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter -ArgumentList @($Name, $Type, $AttributeCollection)
+	#Create the dynamic parameter
+		$Parameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter -ArgumentList @($Name, $Type, $AttributeCollection)
 
-    #Add the dynamic parameter to an existing dynamic parameter dictionary, or create the dictionary and add it
-        if($DPDictionary)
-        {
-            $DPDictionary.Add($Name, $Parameter)
-        }
-        else
-        {
-            $Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
-            $Dictionary.Add($Name, $Parameter)
-            $Dictionary
-        }
+	#Add the dynamic parameter to an existing dynamic parameter dictionary, or create the dictionary and add it
+		if($DPDictionary)
+		{
+			$DPDictionary.Add($Name, $Parameter)
+		}
+		else
+		{
+			$Dictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
+			$Dictionary.Add($Name, $Parameter)
+			$Dictionary
+		}
 }
 #endregion
 

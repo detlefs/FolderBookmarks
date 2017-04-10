@@ -11,7 +11,7 @@
 RootModule = 'FolderBookmarks.psm1'
 
 # Die Versionsnummer dieses Moduls
-ModuleVersion = '1.0.5'
+ModuleVersion = '1.0.6'
 
 # Unterstützte PSEditions
 # CompatiblePSEditions = @()
@@ -107,7 +107,7 @@ PrivateData = @{
         # IconUri = ''
 
         # ReleaseNotes of this module
-        ReleaseNotes = 'Implemented Test-FolderBookmark function'
+        ReleaseNotes = 'Implemented parameters for Get-FolderBookmark'
 
         # External dependent modules of this module
         # ExternalModuleDependencies = ''

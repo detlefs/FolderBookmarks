@@ -26,6 +26,7 @@
     <AliasesToExport>
     </AliasesToExport>
     <WorkingDirectory>C:\Users\detlefs\Documents\Visual Studio 2015\Projects\Github\FolderBookmarks\FolderBookmarks\</WorkingDirectory>
+    <DebugArguments>Get-FolderBookmark</DebugArguments>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
