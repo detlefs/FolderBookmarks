@@ -69,8 +69,8 @@ CLRVersion = '4.0'
 
 # Aus diesem Modul zu exportierende Funktionen. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Funktionen vorhanden sind.
 FunctionsToExport = 'Set-FolderBookmark', 'Use-FolderBookmark', 'Remove-FolderBookmark',
-               'Get-FolderBookmark', 'Export-FolderBookmark',
-               'Import-FolderBookmark'
+			   'Get-FolderBookmark', 'Export-FolderBookmark',
+			   'Import-FolderBookmark'
 
 # Aus diesem Modul zu exportierende Cmdlets. Um optimale Leistung zu erzielen, verwenden Sie keine Platzhalter und löschen den Eintrag nicht. Verwenden Sie ein leeres Array, wenn keine zu exportierenden Cmdlets vorhanden sind.
 CmdletsToExport = @()
@@ -93,25 +93,25 @@ AliasesToExport = 'setbm', 'bookmark', 'goto', 'gobm', 'go', 'rembm', 'unbookmar
 
 # Die privaten Daten, die an das in "RootModule/ModuleToProcess" angegebene Modul übergeben werden sollen. Diese können auch eine PSData-Hashtabelle mit zusätzlichen von PowerShell verwendeten Modulmetadaten enthalten.
 PrivateData = @{
-    PSData = @{
-        # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'Bookmark'
+	PSData = @{
+		# Tags applied to this module. These help with module discovery in online galleries.
+		Tags = 'Bookmark'
 
-        # A URL to the license for this module.
-        LicenseUri = 'http://www.apache.org/licenses/'
+		# A URL to the license for this module.
+		LicenseUri = 'http://www.apache.org/licenses/'
 
-        # A URL to the main website for this project.
-        ProjectUri = 'https://github.com/detlefs/FolderBookmarks'
+		# A URL to the main website for this project.
+		ProjectUri = 'https://github.com/detlefs/FolderBookmarks'
 
-        # A URL to an icon representing this module.
-        # IconUri = ''
+		# A URL to an icon representing this module.
+		# IconUri = ''
 
-        # ReleaseNotes of this module
-        ReleaseNotes = 'Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark'
+		# ReleaseNotes of this module
+		ReleaseNotes = 'Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark'
 
-        # External dependent modules of this module
-        # ExternalModuleDependencies = ''
-    } # End of PSData hashtable
+		# External dependent modules of this module
+		# ExternalModuleDependencies = ''
+	} # End of PSData hashtable
  } # End of PrivateData hashtable
 
 # HelpInfo-URI dieses Moduls
