@@ -28,33 +28,6 @@ $Script:folderBMs = @{}
 $Script:folderBMPath = Join-Path (Split-Path -Parent $profile) .folderBM.clixml
 
 function Set-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Stores a folder ath to a named bookmark
-	.DESCRIPTION
-		The given path is stored to a bookmark that can be used with Get-FolderBookmark
-
-		The list of bookmarks is exported to the user profile using Export-FolderBookmarks
-	.PARAMETER Name
-		Mandatory: yes, Alias(es): n
-	.PARAMETER Path
-		Mandatory: no, Alias(es): p
-		Specifies the path to be stored to the bookmark. If not specified, ".\" is used
-	.EXAMPLE
-		Set-FolderBookmark -Name Sys32 -Path C:\Windows\System32
-
-		Stores a bookmark with the name Sys32 that points to the folder C:\Windows\System32
-	.EXAMPLE
-		cd C:\Projects\PowerShell\ModuleDev\Test1
-		Set-FolderBookmark Test1
-
-		Stores a bookmark with the name Test1 that points to the current folder
-	.NOTES
-		Version history
-		---------------
-		v1.0.0	- Initial version
-	#>
-
 	[CmdletBinding(SupportsShouldProcess=$true)]
 	param (
 		[Parameter(Position=0, Mandatory=$true, HelpMessage="Enter the name of a bookmark")][Alias("n")][string]$Name,
@@ -86,27 +59,6 @@ New-Alias -Name setbm -Value Set-FolderBookmark
 New-Alias -Name bookmark -Value Set-FolderBookmark
 
 function Use-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Retrieves the folder from a named bookmark and sets current location to the folder
-	.PARAMETER Name
-		Mandatory: yes, Alias(es): n
-		Name of the bookmark to use
-	.EXAMPLE
-		Use-FolderBookmark -Name Sys32
-
-		Changes the current location to folder stored as bookmark Sys32
-	.EXAMPLE
-		goto test1
-
-		Changes the current location to folder stored as bookmark test1
-	.NOTES
-		Version history
-		---------------
-		v1.0.1	- Implemented dynamic parameter validation
-		v1.0.0	- Initial version
-	#>
-
 	[CmdletBinding()]
 	param (
 		#[Parameter(Position=0, Mandatory=$true)][Alias("n")][string]$Name
@@ -129,30 +81,6 @@ New-Alias -Name gobm -Value Use-FolderBookmark
 New-Alias -Name go -Value Use-FolderBookmark
 
 function Remove-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Removes the named bookmark from the bookmark-list
-	.DESCRIPTION
-		Removes the bookmark with specified name from the bookmark-list.
-
-		The list of bookmarks is exported to the user profile using Export-FolderBookmarks
-	.PARAMETER Name
-		Mandatory: yes, Alias(es): n
-	.EXAMPLE
-		Use-FolderBookmark -Name Sys32
-
-		Changes the current location to folder stored as bookmark Sys32
-	.EXAMPLE
-		goto test1
-
-		Changes the current location to folder stored as bookmark test1
-	.NOTES
-		Version history
-		---------------
-		v1.0.1	- Added support for pipeline and multiple names
-		v1.0.0	- Initial version
-	#>
-
 	[CmdletBinding(SupportsShouldProcess=$true)]
 	param (
 		#[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true)][Alias("n")][string[]]$Name
@@ -185,32 +113,10 @@ New-Alias -Name rembm -Value Remove-FolderBookmark
 New-Alias -Name unbookmark -Value Remove-FolderBookmark
 
 function Get-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Lists the folder bookmarks or returns the bookmark
-	.EXAMPLE
-		Get-FolderBookmark
-
-		Lists all bookmarks
-	.EXAMPLE
-		Get-FolderBookmark -Name Win
-
-		Returns the bookmark object with the name Win
-	.EXAMPLE
-		Get-FolderBookmark -Path C:\Windows
-
-		´Returns the bookmark object with the path C:\Windows, or $null, if no bookmark with this path exists
-	.NOTES
-		Version history
-		---------------
-		v1.0.1	- Implemented parameters
-		v1.0.0	- Initial version
-	#>
-
 	[CmdletBinding(DefaultParameterSetName="Name")]
 	param (
-		[Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true, ParameterSetName="Name")][string]$Name,
-		[Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true, ParameterSetName="Path")]
+		[Parameter(Position=0, ValueFromPipeline=$true, ValueFromPipelineByPropertyName=$true, ParameterSetName="Name")][Alias("n")][string]$Name,
+		[Parameter(Position=0, ValueFromPipelineByPropertyName=$true, ParameterSetName="Path")][Alias("p")]
 		[ValidateScript({
 			if ((Get-Item $_).PSIsContainer) {
 				$true
@@ -240,44 +146,11 @@ New-Alias -Name getbm -Value Get-FolderBookmark
 New-Alias -Name listbm -Value Get-FolderBookmark
 
 function Export-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Exports the folder bookmarks to the user's profile folder
-	.DESCRIPTION
-		Exports the folder bookmarks to the user's profile folder with the name .folderBM.xml
-	.EXAMPLE
-		Export-FolderBookmark
-
-		Exports all bookmarks to file in current users profile
-	.NOTES
-		Version history
-		---------------
-		v1.0.0	- Initial version
-	#>
-
 	$Script:folderBMs | Export-Clixml -Path $Script:folderBMPath -Encoding UTF8 -Force
 }
 New-Alias -Name expbm -Value Export-FolderBookmark
 
 function Import-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Imports the folder bookmarks from the user's profile folder
-	.DESCRIPTION
-		Imports the folder bookmarks from the user's profile file with the name .folderBM.xml
-		Existing bookmarks in memory will be overwritten
-
-		To automatically import the bookmarks into each user session, it's easy to add the command to
-		the users profile script.
-	.EXAMPLE
-		Import-FolderBookmark
-
-		Imports all bookmarks from file
-	.NOTES
-		Version history
-		---------------
-		v1.0.0	- Initial version
-	#>
 	if (Test-Path $Script:folderBMPath) {
 		$Script:folderBMs = Import-Clixml -Path $Script:folderBMPath
 	}
@@ -285,30 +158,6 @@ function Import-FolderBookmark {
 New-Alias -Name impbm -Value Import-FolderBookmark
 
 function Test-FolderBookmark {
-	<#
-	.SYNOPSIS
-		Tests if a specified path is stored in the bookmark list
-	.DESCRIPTION
-		The function tests, if the specified path is stored in the bookmark list. If the path is found in the list, the function returns $true. Otherwise $false is returned.
-
-		For example, the following code snipped put into a custom 'prompt' function, will add a dark cyan '[go]' to the prompt:
-
-			...
-			if (Test-FolderBookmark -Path (Get-Location).Path)
-			{
-				Write-Host ' [go] ' -ForegroundColor DarkCyan -NoNewline
-			}
-			...
-	.EXAMPLE
-		Test-FolderBookmark -Path C:\Windows\System32
-
-		Returns $true or $false
-	.NOTES
-		Version history
-		---------------
-		v1.0.0	- Initial version
-	#>
-
 	[CmdletBinding()]
 	param (
 		[Parameter(Position=0, HelpMessage="Specify a folder path to test")][Alias("p")]

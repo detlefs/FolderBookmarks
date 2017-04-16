@@ -47,8 +47,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Debug-FolderBookmarks.ps1" />
+    <Compile Include="en-US\FolderBookmarks-Help.xml" />
     <Compile Include="FolderBookmarks.psd1" />
     <Compile Include="FolderBookmarks.psm1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="en-US\" />
+    <Folder Include="de-DE\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="Build" />

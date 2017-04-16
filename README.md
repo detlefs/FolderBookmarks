@@ -6,6 +6,7 @@ The set bookmarks are automatically stored in a file `.folderBM.clixml` in the u
 The module is provided under the Apache License Version 2.0. See http://www.apache.org/licenses/ for more details.
 
 ### Version history
+    v1.0.6	- Implemented parameters for Get-FolderBookmark
     v1.0.5  - Implemented Test-FolderBookmark function
     v1.0.4  - Implemented dynamic parameter validation for Use-FolderBookmark and Remove-FolderBookmark
     v1.0.3  - Changed/Added some aliases, added Export-ModuleMember for PS4 compatibility
@@ -34,8 +35,11 @@ The list of bookmarks is exported to the user profile using `Export-FolderBookma
 
 Alias(es): `rembm`, `unbookmark`
 
-#### `Get-FolderBookmark`
-Lists the folder bookmarks
+#### `Get-FolderBookmark -Name [name]`
+#### `Get-FolderBookmark -Path [path]`
+Lists the folder bookmarks.
+
+If a name or path is specified and is found in the list of folder bookmarks, the folder bookmark object with the specified name or path is specified.
 
 Alias(es): `getbm`, `listbm`
 
@@ -57,6 +61,17 @@ Alias(es): `impbm`
 The function tests, if the specified path is stored in the bookmark list. If the path is found in the list, the function returns $true. Otherwise $false is returned
 
 This function can be helpful to implement a custom formatting in a customized prompt script.
+
+For example, the following code snipped put into user's `prompt` function, will add a dark cyan '[go]' to the prompt:
+
+    function prompt {
+        ...
+        if (Test-FolderBookmark -Path (Get-Location).Path)
+        {
+	        Write-Host ' [go] ' -ForegroundColor DarkCyan -NoNewline
+        }
+        ...
+    }
 
 Alias(es): `testbm`
 
